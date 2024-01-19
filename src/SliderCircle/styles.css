@@ -1,0 +1,66 @@
+.sliderCircle_body {
+    width: 500px;
+    height: 500px;
+
+    border-radius: 50%;
+    border: 1px solid #42567A20;
+    position: absolute;
+
+    left: -250px;
+    top: -250px;
+}
+
+.sliderCircle_dot > *{
+    position: absolute;
+}
+
+.sliderCircle_dot {
+    position: absolute;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    transition: all 0.3s ease-in-out;
+}
+
+.sliderCircle_dot::after {
+    position: absolute;
+    content: "";
+
+    width: 56px;
+    height: 56px;
+}
+
+.sliderCircle_dot::before {
+    position: absolute;
+    content: "";
+
+    width: 56px;
+    height: 56px;
+
+    border-radius: 50%;
+    border: 1px solid #42567A;
+    background-color: #FFFFFF;
+
+    font-size: 20px;
+    line-height: 56px;
+
+    transition: all 0.3s ease-in-out;
+}
+
+.sliderCircle_dot_disable {
+    cursor: pointer;
+}
+
+.sliderCircle_dot_disable:not(:hover) {
+    font-size: 0px;
+}
+
+.sliderCircle_dot_disable:not(:hover)::before {
+    content: "";
+    width: 2px;
+    height: 2px;
+    background-color: #42567A;
+}
