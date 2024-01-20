@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import classNames from 'classnames';
 import './styles.css';
 
@@ -23,29 +23,60 @@ function Dot({ position, data, disable, onClick }: DotProps) {
 
 function SliderCircle() {
   const [selectedIdx, setSelectedIdx] = useState(0);
+  let ref = useRef(null);
 
   const getPosition = (idx: number, length: number, diff: number) => {
     const step = Math.PI * 2 / length;
-    return { x: Math.cos(idx * step + diff) * 250, y: Math.sin(idx * step + diff) * 250 }
+    return { x: Math.cos((idx - (selectedIdx || 0)) * step + diff) * 250, y: Math.sin((idx - (selectedIdx || 0)) * step + diff) * 250 }
   }
 
-  return <>
-    <div className="sliderCircle">
-      <div className="sliderCircle_body">
+  const handleChangeSlide = (idx: number, length: number) => {
+    const step = 360 / length;
 
-      </div>
-      {
-        [0, 1, 2, 3].map((elem, idx, arr) => (
-          <Dot key={idx}
-            data={{ label: elem }}
-            disable={selectedIdx !== idx}
-            position={getPosition(idx, arr.length, -Math.PI / arr.length)}
-            onClick={() => setSelectedIdx(idx)}
-          />
-        ))
-      }
-    </div>
-  </>
+    const left = length - idx + selectedIdx;
+    const right = selectedIdx - idx;
+    const dir = Math.abs(left) <= Math.abs(right) ? left : right;
+
+    const transformStart = selectedIdx * step;
+    const transformEnd = dir * step;
+
+    console.log(selectedIdx, left, right, idx, dir, transformStart, transformEnd)
+    console.log(ref)
+
+    if (!ref.current) return;
+
+    const target = ref.current as HTMLElement;
+    setSelectedIdx(-1);
+
+    let animation = target.animate([
+      { transform: `rotate(${0}deg)` },
+      { transform: `rotate(${transformEnd}deg)` }
+    ], 600 * Math.abs(dir));
+
+    animation?.addEventListener('finish', () => {
+      target.style.transform = `rotate(${0}deg)`;
+      setSelectedIdx(idx);
+    });
+  }
+
+
+  return <div className="sliderCircle" ref={ref}>
+    <div className="sliderCircle_body"></div>
+
+    {
+      [0, 1, 2, 3, 4].map((elem, idx, arr) => (
+        <Dot key={idx}
+          data={{ label: elem }}
+          disable={selectedIdx !== idx}
+          position={getPosition(idx, arr.length, -Math.PI / 2 + Math.PI / arr.length)}
+          onClick={() => {
+
+            handleChangeSlide(idx, arr.length);
+          }}
+        />
+      ))
+    }
+  </div>
 }
 
 export default SliderCircle
