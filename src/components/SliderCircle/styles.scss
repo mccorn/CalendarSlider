@@ -80,7 +80,7 @@ $dot_size: 56px;
     border-radius: 50%;
     border: 1px solid #42567A80;
 
-    background-image: url("../img/arrow_left.png");
+    background-image: url("../../img/arrow_left.png");
     background-repeat: no-repeat;
     background-position: 47% center;
 
@@ -111,6 +111,10 @@ $dot_size: 56px;
         right: 0;
         transform: scale(-1);
     }
+
+    .swiper-button-disabled {
+        opacity: 0.5;
+    }
 }
 
 .swiper.categoriessSwiperDots {
@@ -137,8 +141,6 @@ $dot_size: 56px;
    
     width: 3px;
     height: 3px;
-
-    // background-color: red;
 
     &-active {
         opacity: 1;

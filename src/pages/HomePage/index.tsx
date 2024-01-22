@@ -1,7 +1,7 @@
 import { useState } from "react"
-import SliderCircle from "../SliderCircle"
-import Scrollbar from "../Scrollbar"
 import "./styles.scss"
+import SliderCircle from "../../components/SliderCircle"
+import Scrollbar from "../../components/Scrollbar"
 
 export type TEvent = {
   date: string,

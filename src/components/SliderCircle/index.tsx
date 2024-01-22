@@ -5,7 +5,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
 import { Swiper as TSwiper } from 'swiper/types';
 
-import { EventsCategory } from '../HomePage';
+import { EventsCategory } from '../../pages/HomePage';
 import './styles.scss';
 
 type DotProps = {
