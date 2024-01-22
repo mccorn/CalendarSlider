@@ -3,10 +3,10 @@ import { useRef, useState } from 'react';
 import classNames from 'classnames';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
+import { Swiper as TSwiper } from 'swiper/types';
 
 import { EventsCategory } from '../HomePage';
 import './styles.scss';
-import { Swiper as TSwiper } from 'swiper/types';
 
 type DotProps = {
   data: { label: string | number };
@@ -32,6 +32,7 @@ type SliderCircleProps = {
 }
 
 function SliderCircle({ data, onChangeSlide }: SliderCircleProps) {
+  const [swiperDotRef, setSwiperDotRef] = useState(null as unknown as TSwiper);
   const [swiperRef, setSwiperRef] = useState(null as unknown as TSwiper);
   const [selectedIdx, setSelectedIdx] = useState(0);
   let ref = useRef(null);
@@ -65,6 +66,7 @@ function SliderCircle({ data, onChangeSlide }: SliderCircleProps) {
       target.style.transform = `rotate(${0}deg)`;
       setSelectedIdx(idx);
       if (!noChangePagination) slideTo(idx);
+      swiperDotRef.slideTo(idx, 0);
       onChangeSlide?.(idx)
     });
   }
@@ -97,15 +99,22 @@ function SliderCircle({ data, onChangeSlide }: SliderCircleProps) {
         currentClass: "categoriessSwiper-pagination",
         formatFractionCurrent: (e) => e < 10 ? "0" + e : e,
         formatFractionTotal: (e) => e < 10 ? "0" + e : e,
-        renderFraction: (currentClass, totalClass) => {
-          return `<div>
-            <span class="' + ${currentClass} + '">' + (index + 1) + '</span>/
-            <span class="' + ${totalClass} + '">' + (index + 1) + '</span>
-          </div>`
-        },
+        renderFraction: (currentClass, totalClass) => (`<div>
+          <span class="${currentClass}"></span>/
+          <span class="${totalClass}"></span>
+        </div>`),
       }}
     >
       {data.map((__, idx) => <SwiperSlide key={idx} />)}
+    </Swiper>
+
+    <Swiper
+      modules={[Pagination]}
+      onSwiper={setSwiperDotRef}
+      className="categoriessSwiperDots"
+      pagination={{ type: 'bullets',  currentClass: "categoriessSwiperDots-pagination", }}
+    >
+      {data.map((__, idx) => <SwiperSlide key={idx + "_s"} />)}
     </Swiper>
   </>
 }

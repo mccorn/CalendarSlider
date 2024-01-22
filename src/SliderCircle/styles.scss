@@ -112,3 +112,35 @@ $dot_size: 56px;
         transform: scale(-1);
     }
 }
+
+.swiper.categoriessSwiperDots {
+    display: none;
+    
+    .swiper-pagination-bullets {
+        position: fixed;
+        display: flex;
+        justify-content: space-between;
+        width: 74px;
+
+        left: calc(50vw - 37px);
+        top: calc(100vh - 32px);
+    }
+}
+
+.swiper-pagination-bullet {
+    display: block;
+
+    border: 3px solid #42567A;
+    border-radius: 50%;
+
+    opacity: 0.4;
+   
+    width: 3px;
+    height: 3px;
+
+    // background-color: red;
+
+    &-active {
+        opacity: 1;
+    }
+}

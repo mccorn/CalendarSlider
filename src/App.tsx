@@ -1,5 +1,5 @@
 import HomePage from "./HomePage";
-import "./styles.css";
+import "./styles.scss";
 
 const data = [
   {
