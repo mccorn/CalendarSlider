@@ -3,6 +3,11 @@
     src: url(fonts/PT_Sans/PTSans-Regular.ttf);
 }
 
+@font-face {
+    font-family: 'BebasNeue';
+    src: url(fonts/Bebas_Neue/BebasNeue-Regular.ttf);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -11,6 +16,8 @@
 
 body {
     font-family: 'PT_Sans';
+    color: #42567A;
+    border-color: #F4F5F9;
 }
 
 .page {
@@ -34,8 +41,15 @@ main {
 h1 {
     font-size: 56px;
     line-height: 120%;
+}
 
-    color: #42567A;
+h4 {
+    font-family: 'BebasNeue';
+
+    font-size: 25px;
+    line-height: 120%;
+
+    margin-bottom: 15px;
 }
 
 .homePage_header {
@@ -114,6 +128,10 @@ h1 {
 .text__color_iris {
     right: 0%;
     color: #EF5DA8;
+}
+
+.text_color_blue {
+    color: #3877EE;
 }
 
 .flex {

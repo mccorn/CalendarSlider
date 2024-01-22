@@ -1,6 +1,7 @@
 
 import { useRef, useState } from 'react';
 import classNames from 'classnames';
+import { TEvent } from '../HomePage';
 import './styles.css';
 
 type DotProps = {
@@ -21,7 +22,11 @@ function Dot({ position, data, disable, onClick }: DotProps) {
   </div>
 }
 
-function SliderCircle() {
+type SliderCircleProps = {
+  data: TEvent[]
+}
+
+function SliderCircle({ data }: SliderCircleProps) {
   const [selectedIdx, setSelectedIdx] = useState(0);
   let ref = useRef(null);
 
@@ -46,7 +51,6 @@ function SliderCircle() {
     if (!ref.current) return;
 
     const target = ref.current as HTMLElement;
-    setSelectedIdx(-1);
 
     let animation = target.animate([
       { transform: `rotate(${0}deg)` },
@@ -60,23 +64,25 @@ function SliderCircle() {
   }
 
 
-  return <div className="sliderCircle" ref={ref}>
-    <div className="sliderCircle_body"></div>
+  return <>
+    <div className="sliderCircle" ref={ref}>
+      <div className="sliderCircle_body"></div>
 
-    {
-      [0, 1, 2, 3, 4].map((elem, idx, arr) => (
-        <Dot key={idx}
-          data={{ label: elem }}
-          disable={selectedIdx !== idx}
-          position={getPosition(idx, arr.length, -Math.PI / 2 + Math.PI / arr.length)}
-          onClick={() => {
-
-            handleChangeSlide(idx, arr.length);
-          }}
-        />
-      ))
-    }
-  </div>
+      {
+        data.map((elem, idx, arr) => (
+          <Dot key={idx}
+            data={{ label: idx + 1 }}
+            disable={selectedIdx !== idx}
+            position={getPosition(idx, arr.length, -Math.PI / 2 + Math.PI / arr.length)}
+            onClick={() => { handleChangeSlide(idx, arr.length); }}
+          />
+        ))
+      }
+    </div> 
+    
+    <div className="swiper-button-prev"></div>
+    <div className="swiper-button-next"></div>
+  </>
 }
 
 export default SliderCircle
