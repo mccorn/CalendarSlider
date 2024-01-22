@@ -8,7 +8,7 @@ export type TEvent = {
   description: string,
 }
 
-type EventsCategory = {
+export type EventsCategory = {
   title: string,
   startDate: number,
   finishDate: number,
@@ -20,10 +20,10 @@ type HomePageProps = {
 }
 
 function HomePage({ data }: HomePageProps) {
-  const [selectedIdx] = useState(0);
+  const [selectedIdx, setSelectedIdx] = useState(0);
   const currentData = data[selectedIdx];
 
-  return <div className="page homePage">
+  return currentData ? <div className="page homePage">
     <main className="">
       <div className="backgroundLines">
         <div className="line line_vertical"></div>
@@ -42,11 +42,12 @@ function HomePage({ data }: HomePageProps) {
         <div className="header text__color_iris">{currentData.finishDate}</div>
       </div>
 
-      <SliderCircle data={currentData.events} />
+      <SliderCircle data={data} onChangeSlide={setSelectedIdx}/>
 
       <Scrollbar data={currentData.events} />
     </main>
   </div>
+  : null
 }
 
 export default HomePage

@@ -121,12 +121,14 @@ h4 {
 }
 
 .text__color_fuxia {
-    left: 0%;
+    width: 39%;
+    right: 50%;
     color: #5D5FEF;
 }
 
 .text__color_iris {
-    right: 0%;
+    width: 39%;
+    left: 50%;
     color: #EF5DA8;
 }
 

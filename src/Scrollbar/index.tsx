@@ -10,7 +10,6 @@ type ScrollbarProps = {
 }
 
 function Scrollbar({data}: ScrollbarProps) {
-  console.log(data)
   return <>
     <Swiper navigation={true} 
     modules={[Navigation]} 

@@ -1,8 +1,12 @@
 
 import { useRef, useState } from 'react';
 import classNames from 'classnames';
-import { TEvent } from '../HomePage';
-import './styles.css';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination } from 'swiper/modules';
+
+import { EventsCategory } from '../HomePage';
+import './styles.scss';
+import { Swiper as TSwiper } from 'swiper/types';
 
 type DotProps = {
   data: { label: string | number };
@@ -23,30 +27,30 @@ function Dot({ position, data, disable, onClick }: DotProps) {
 }
 
 type SliderCircleProps = {
-  data: TEvent[]
+  data: EventsCategory[],
+  onChangeSlide?: (idx: number) => void;
 }
 
-function SliderCircle({ data }: SliderCircleProps) {
+function SliderCircle({ data, onChangeSlide }: SliderCircleProps) {
+  const [swiperRef, setSwiperRef] = useState(null as unknown as TSwiper);
   const [selectedIdx, setSelectedIdx] = useState(0);
   let ref = useRef(null);
 
   const getPosition = (idx: number, length: number, diff: number) => {
     const step = Math.PI * 2 / length;
-    return { x: Math.cos((idx - (selectedIdx || 0)) * step + diff) * 250, y: Math.sin((idx - (selectedIdx || 0)) * step + diff) * 250 }
+    return { x: Math.cos((idx - (selectedIdx || 0)) * step + diff) * 525 * 0.5, y: Math.sin((idx - (selectedIdx || 0)) * step + diff) * 525 * 0.5 }
   }
 
-  const handleChangeSlide = (idx: number, length: number) => {
-    const step = 360 / length;
+  const slideTo = (index: number) => {
+    swiperRef.slideTo(index, 0);
+  };
 
+  const handleChangeSlide = (idx: number, length: number, noChangePagination?: boolean) => {
+    const step = 360 / length;
     const left = length - idx + selectedIdx;
     const right = selectedIdx - idx;
     const dir = Math.abs(left) <= Math.abs(right) ? left : right;
-
-    const transformStart = selectedIdx * step;
     const transformEnd = dir * step;
-
-    console.log(selectedIdx, left, right, idx, dir, transformStart, transformEnd)
-    console.log(ref)
 
     if (!ref.current) return;
 
@@ -60,16 +64,17 @@ function SliderCircle({ data }: SliderCircleProps) {
     animation?.addEventListener('finish', () => {
       target.style.transform = `rotate(${0}deg)`;
       setSelectedIdx(idx);
+      if (!noChangePagination) slideTo(idx);
+      onChangeSlide?.(idx)
     });
   }
-
 
   return <>
     <div className="sliderCircle" ref={ref}>
       <div className="sliderCircle_body"></div>
 
       {
-        data.map((elem, idx, arr) => (
+        data.map((__, idx, arr) => (
           <Dot key={idx}
             data={{ label: idx + 1 }}
             disable={selectedIdx !== idx}
@@ -78,10 +83,30 @@ function SliderCircle({ data }: SliderCircleProps) {
           />
         ))
       }
-    </div> 
-    
-    <div className="swiper-button-prev"></div>
-    <div className="swiper-button-next"></div>
+    </div>
+
+    <Swiper
+      navigation={true}
+      modules={[Navigation, Pagination]}
+      className="categoriessSwiper"
+      onSwiper={setSwiperRef}
+      onNavigationPrev={() => handleChangeSlide(selectedIdx - 1, data.length, true)}
+      onNavigationNext={() => handleChangeSlide(selectedIdx + 1, data.length, true)}
+      pagination={{
+        type: 'fraction',
+        currentClass: "categoriessSwiper-pagination",
+        formatFractionCurrent: (e) => e < 10 ? "0" + e : e,
+        formatFractionTotal: (e) => e < 10 ? "0" + e : e,
+        renderFraction: (currentClass, totalClass) => {
+          return `<div>
+            <span class="' + ${currentClass} + '">' + (index + 1) + '</span>/
+            <span class="' + ${totalClass} + '">' + (index + 1) + '</span>
+          </div>`
+        },
+      }}
+    >
+      {data.map((__, idx) => <SwiperSlide key={idx} />)}
+    </Swiper>
   </>
 }
 
