@@ -30,44 +30,39 @@ function HomePage({ data }: HomePageProps) {
   const startDateRef = useRef(null);
   const finishDateRef = useRef(null);
 
-  let interval1: NodeJS.Timeout;
-  let interval2: NodeJS.Timeout;
+  let interval: NodeJS.Timeout;
 
   useEffect(() => {
     if (targetIdx == selectedIdx) return;
 
-    if (interval1) clearInterval(interval1);
-    if (interval2) clearInterval(interval2);
+    if (interval) clearInterval(interval);
 
     let value = data[selectedIdx].startDate;
     let newValue = data[targetIdx].startDate;
     let dir = newValue > value ? 1 : -1;
 
-    interval1 = setInterval(() => {
+    let value2 = data[selectedIdx].finishDate;
+    let newValue2 = data[targetIdx].finishDate;
+    let dir2 = newValue > value ? 1 : -1;
+
+    interval = setInterval(() => {
       if (value === newValue) {
-        clearInterval(interval1);
+        clearInterval(interval);
         setStartDate(newValue);
+        setFinishDate(newValue2);
+        return;
       }
      
       if (startDateRef.current) {
         (startDateRef.current as HTMLElement).innerHTML = (value += dir).toString();
       }
-    }, 600 / Math.abs(newValue - value))
-
-    let value2 = data[selectedIdx].finishDate;
-    let newValue2 = data[targetIdx].finishDate;
-    let dir2 = newValue > value ? 1 : -1;
-
-    interval2 = setInterval(() => {
-      if (value2 === newValue2) {
-        clearInterval(interval2);
-        setFinishDate(newValue2);
-      }
-     
+      
       if (finishDateRef.current) {
         (finishDateRef.current as HTMLElement).innerHTML = (value2 += dir2).toString();
       }
-    }, 600 / Math.abs(newValue2 - value2))
+    }, 600 / Math.abs(newValue - value))
+
+    return () => { if (interval) clearInterval(interval); }
   }, [targetIdx])
 
 
