@@ -7,21 +7,34 @@ import { Swiper as TSwiper } from 'swiper/types';
 
 import { EventsCategory } from '../../pages/HomePage';
 import './styles.scss';
+import { CSSTransition } from 'react-transition-group';
 
 type DotProps = {
-  data: { label: string | number };
+  data: { label: string | number, title: string | number };
   position: { x: number, y: number };
   disable: boolean;
+  showTitle: boolean;
   onClick: () => void;
 }
 
-const Dot = forwardRef(function ({ position, data, disable, onClick }: DotProps, ref) {
+const Dot = forwardRef(function ({ position, data, disable, showTitle, onClick }: DotProps, ref) {
   const transform = `translate(${position.x || 0}px, ${position.y || 0}px)`;
+  const nodeRef = useRef(null);
 
   return <div className={classNames("sliderCircle_dot", { "sliderCircle_dot_disable": disable })}
     style={{ transform }}
     onClick={onClick}
   >
+    <CSSTransition
+      in={showTitle}
+      timeout={{ enter: 400, exit: 0 }}
+      classNames="sliderCircle_dot_label sliderCircle_dot_label"
+      unmountOnExit
+      appear
+      nodeRef={nodeRef}
+    >
+      <div ref={nodeRef}>{data.title}</div>
+    </CSSTransition>
     <span ref={ref as ForwardedRef<HTMLElement>}>{data.label}</span>
   </div>
 })
@@ -89,10 +102,11 @@ function SliderCircle({ data, onChangeSlide, onStartChangeSlide }: SliderCircleP
       <div className="sliderCircle_body"></div>
 
       {
-        data.map((__, idx, arr) => (
+        data.map((item, idx, arr) => (
           dotsRefs[idx] = <Dot key={idx}
-            data={{ label: idx + 1 }}
+            data={{ label: idx + 1, title: item.title }}
             disable={targetIdx !== idx}
+            showTitle={targetIdx === idx && targetIdx === selectedIdx}
             position={getPosition(idx, arr.length, -Math.PI / 2 + Math.PI / arr.length)}
             onClick={() => { handleChangeSlide(idx, arr.length); }}
             ref={useRef()}
