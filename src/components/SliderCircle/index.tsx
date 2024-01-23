@@ -29,9 +29,10 @@ const Dot = forwardRef(function ({ position, data, disable, onClick }: DotProps,
 type SliderCircleProps = {
   data: EventsCategory[],
   onChangeSlide?: (idx: number) => void;
+  onStartChangeSlide?: (idx: number) => void;
 }
 
-function SliderCircle({ data, onChangeSlide }: SliderCircleProps) {
+function SliderCircle({ data, onChangeSlide, onStartChangeSlide }: SliderCircleProps) {
   const [swiperDotRef, setSwiperDotRef] = useState(null as unknown as TSwiper);
   const [swiperRef, setSwiperRef] = useState(null as unknown as TSwiper);
   const [selectedIdx, setSelectedIdx] = useState(0);
@@ -61,14 +62,15 @@ function SliderCircle({ data, onChangeSlide }: SliderCircleProps) {
     const target = ref.current as HTMLElement;
 
     let animation = target.animate([
-      { transform: `rotate(${0}deg)` },
+      { transform: `rotate(0deg)` },
       { transform: `rotate(${transformEnd}deg)` }
     ], animTime);
 
     setTargetIdx(idx);
+    onStartChangeSlide?.(idx);
 
     animation?.addEventListener('finish', () => {
-      target.style.transform = `rotate(${0}deg)`;
+      target.style.transform = `rotate(0deg)`;
       setSelectedIdx(idx);
       if (!noChangePagination) slideTo(idx);
       swiperDotRef.slideTo(idx, 0);
@@ -77,7 +79,7 @@ function SliderCircle({ data, onChangeSlide }: SliderCircleProps) {
 
     const dot = dotsRefs[idx];
     dot.ref.current.animate([
-      { transform: `rotate(${0}deg)` },
+      { transform: `rotate(0deg)` },
       { transform: `rotate(${-transformEnd}deg)` }
     ], animTime);
   }
