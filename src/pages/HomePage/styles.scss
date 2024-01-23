@@ -36,10 +36,10 @@ $backgroundColor: #ffffff;
         position: absolute;
         height: 100%;
         min-width: 1180px;
-    
+
         left: 16.666%;
         right: 8.3333%;
-    
+
         padding-top: 170px;
     }
 
@@ -101,7 +101,7 @@ $backgroundColor: #ffffff;
         }
     }
 
-    .eventsSwiper {
+    .scrollbar {
         position: absolute;
         bottom: 0;
         left: 0;
@@ -110,6 +110,36 @@ $backgroundColor: #ffffff;
         margin-bottom: 24px;
         padding: 0 80px;
 
+        &-exit {
+            bottom: 0px;
+            opacity: 1;
+        }
+
+        &-exit-active {
+            bottom: -200px;
+            opacity: 0;
+            transition: all 300ms;
+        }
+
+        &-enter {
+            bottom: -200px;
+            opacity: 0;
+        }
+
+        &-enter-active {
+            bottom: 0px;
+            opacity: 1;
+            transition: all 300ms;
+        }
+
+        &-appear,
+        &-enter-done {
+            bottom: 0px;
+            opacity: 1;
+        }
+    }
+
+    .eventsSwiper {
         .swiper-slide {
             min-height: 135px;
         }

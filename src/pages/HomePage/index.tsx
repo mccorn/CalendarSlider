@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import "./styles.scss"
 import SliderCircle from "../../components/SliderCircle"
 import Scrollbar from "../../components/Scrollbar"
+import { CSSTransition } from "react-transition-group"
 
 export type TEvent = {
   date: string,
@@ -29,6 +30,7 @@ function HomePage({ data }: HomePageProps) {
 
   const startDateRef = useRef(null);
   const finishDateRef = useRef(null);
+  const scrollbarRef = useRef(null);
 
   let interval: NodeJS.Timeout;
 
@@ -52,11 +54,11 @@ function HomePage({ data }: HomePageProps) {
         setFinishDate(newValue2);
         return;
       }
-     
+
       if (startDateRef.current) {
         (startDateRef.current as HTMLElement).innerHTML = (value += dir).toString();
       }
-      
+
       if (finishDateRef.current) {
         (finishDateRef.current as HTMLElement).innerHTML = (value2 += dir2).toString();
       }
@@ -87,10 +89,21 @@ function HomePage({ data }: HomePageProps) {
 
       <SliderCircle data={data} onChangeSlide={setSelectedIdx} onStartChangeSlide={setTargetIdx} />
 
-      <Scrollbar data={currentData.events} />
+      <CSSTransition
+        in={selectedIdx === targetIdx}
+        timeout={{ enter: 600, exit: 300 }}
+        classNames="scrollbar scrollbar"
+        unmountOnExit
+        appear
+        nodeRef={scrollbarRef}
+      >
+        <div ref={scrollbarRef}>
+          <Scrollbar data={currentData.events} />
+        </div>
+      </CSSTransition>
     </main>
   </div>
-  : null
+    : null
 }
 
 export default HomePage
