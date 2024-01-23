@@ -35,6 +35,7 @@ function SliderCircle({ data, onChangeSlide }: SliderCircleProps) {
   const [swiperDotRef, setSwiperDotRef] = useState(null as unknown as TSwiper);
   const [swiperRef, setSwiperRef] = useState(null as unknown as TSwiper);
   const [selectedIdx, setSelectedIdx] = useState(0);
+  const [targetIdx, setTargetIdx] = useState(0);
   let ref = useRef(null);
 
   const getPosition = (idx: number, length: number, diff: number) => {
@@ -62,6 +63,8 @@ function SliderCircle({ data, onChangeSlide }: SliderCircleProps) {
       { transform: `rotate(${transformEnd}deg)` }
     ], 600 * Math.abs(dir));
 
+    setTargetIdx(idx);
+
     animation?.addEventListener('finish', () => {
       target.style.transform = `rotate(${0}deg)`;
       setSelectedIdx(idx);
@@ -79,7 +82,7 @@ function SliderCircle({ data, onChangeSlide }: SliderCircleProps) {
         data.map((__, idx, arr) => (
           <Dot key={idx}
             data={{ label: idx + 1 }}
-            disable={selectedIdx !== idx}
+            disable={targetIdx !== idx}
             position={getPosition(idx, arr.length, -Math.PI / 2 + Math.PI / arr.length)}
             onClick={() => { handleChangeSlide(idx, arr.length); }}
           />
@@ -112,7 +115,7 @@ function SliderCircle({ data, onChangeSlide }: SliderCircleProps) {
       modules={[Pagination]}
       onSwiper={setSwiperDotRef}
       className="categoriessSwiperDots"
-      pagination={{ type: 'bullets',  currentClass: "categoriessSwiperDots-pagination", }}
+      pagination={{ type: 'bullets', currentClass: "categoriessSwiperDots-pagination", }}
     >
       {data.map((__, idx) => <SwiperSlide key={idx + "_s"} />)}
     </Swiper>
