@@ -1,5 +1,5 @@
 
-import { useRef, useState } from 'react';
+import { ForwardedRef, forwardRef, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
@@ -15,16 +15,16 @@ type DotProps = {
   onClick: () => void;
 }
 
-function Dot({ position, data, disable, onClick }: DotProps) {
-  const transform = `translate(${position.x || 0}px, ${position.y}px)`;
+const Dot = forwardRef(function ({ position, data, disable, onClick }: DotProps, ref) {
+  const transform = `translate(${position.x || 0}px, ${position.y || 0}px)`;
 
   return <div className={classNames("sliderCircle_dot", { "sliderCircle_dot_disable": disable })}
     style={{ transform }}
     onClick={onClick}
   >
-    <span>{data.label}</span>
+    <span ref={ref as ForwardedRef<HTMLElement>}>{data.label}</span>
   </div>
-}
+})
 
 type SliderCircleProps = {
   data: EventsCategory[],
@@ -37,6 +37,7 @@ function SliderCircle({ data, onChangeSlide }: SliderCircleProps) {
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [targetIdx, setTargetIdx] = useState(0);
   let ref = useRef(null);
+  const dotsRefs: any[] = [];
 
   const getPosition = (idx: number, length: number, diff: number) => {
     const step = Math.PI * 2 / length;
@@ -53,6 +54,7 @@ function SliderCircle({ data, onChangeSlide }: SliderCircleProps) {
     const right = selectedIdx - idx;
     const dir = Math.abs(left) <= Math.abs(right) ? left : right;
     const transformEnd = dir * step;
+    const animTime = 600 * Math.abs(dir);
 
     if (!ref.current) return;
 
@@ -61,7 +63,7 @@ function SliderCircle({ data, onChangeSlide }: SliderCircleProps) {
     let animation = target.animate([
       { transform: `rotate(${0}deg)` },
       { transform: `rotate(${transformEnd}deg)` }
-    ], 600 * Math.abs(dir));
+    ], animTime);
 
     setTargetIdx(idx);
 
@@ -72,6 +74,12 @@ function SliderCircle({ data, onChangeSlide }: SliderCircleProps) {
       swiperDotRef.slideTo(idx, 0);
       onChangeSlide?.(idx)
     });
+
+    const dot = dotsRefs[idx];
+    dot.ref.current.animate([
+      { transform: `rotate(${0}deg)` },
+      { transform: `rotate(${-transformEnd}deg)` }
+    ], animTime);
   }
 
   return <>
@@ -80,11 +88,12 @@ function SliderCircle({ data, onChangeSlide }: SliderCircleProps) {
 
       {
         data.map((__, idx, arr) => (
-          <Dot key={idx}
+          dotsRefs[idx] = <Dot key={idx}
             data={{ label: idx + 1 }}
             disable={targetIdx !== idx}
             position={getPosition(idx, arr.length, -Math.PI / 2 + Math.PI / arr.length)}
             onClick={() => { handleChangeSlide(idx, arr.length); }}
+            ref={useRef()}
           />
         ))
       }
